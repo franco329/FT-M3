@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 const echo = (args, print) => {
     print(args.join(' '));
 };
@@ -10,8 +12,17 @@ const date = (args, print) => {
     print(Date());
 };
 
+const ls = (args, print) => {
+    fs.readdir('.', (err, files) => {
+        if (err) throw err;
+        // files.forEach((file) => process.stdout.write(file + '/n'));
+        print(files.join('/n'))
+    });
+};
+
 module.exports = {
     echo,
     pwd,
     date,
+    ls,
 };
