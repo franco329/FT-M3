@@ -1,28 +1,44 @@
-const fs = require('fs')
+const fs = require ('fs');
 
-const echo = (args, print) => {
-    print(args.join(' '));
-};
-
-const pwd = (args, print) => {
-    print(__dirname.split('\\').at(-1));
-};
-
-const date = (args, print) => {
-    print(Date());
-};
-
-const ls = (args, print) => {
-    fs.readdir('.', (err, files) => {
-        if (err) throw err;
-        // files.forEach((file) => process.stdout.write(file + '/n'));
-        print(files.join('/n'))
-    });
-};
+const write = (value) => {
+    process.stdout.write(value + '\n');
+    process.stdout.write('prompt > ');
+}
 
 module.exports = {
-    echo,
-    pwd,
-    date,
-    ls,
-};
+    pwd: () => {
+        // resumo esto en:
+        // const dirname = process.cwd().split('\\').at(-1);
+        // write(dirname);
+        write(process.cwd().split('\\').at(-1))
+    },
+    date: () => { write(Date())
+    },
+    ls: () => {
+        fs.readdir('.', (err, files) => {
+            const text = files.join('\n');
+            write(text)
+        })
+    },
+    echo: (text) => {
+        write(text);
+    },
+    cat: (filename) => {
+        // muestra todo el contenido de un archivo
+        fs.readFile('./' + filename, 'utf-8', (err, file) => {
+            write(file);
+        })
+    },
+    head: (filename) => {
+        // muestra las primeras lineas de un archivo, no todo el archivo
+        fs.readFile('./' + filename, 'utf-8', (err, file) => {
+            write(file.split('\n').slice(0, 5).join('\n'));
+        })
+    },
+    tail: (filename) =>{
+        // muestra las últimas líneas de un archivo
+        fs.readFile('./' + filename, 'utf-8', (err, file) => {
+            write(file.split('\n').slice(-5).join('\n')); //el -5 es para que imprima las ultimas 5 lineas
+        })
+    },
+}
