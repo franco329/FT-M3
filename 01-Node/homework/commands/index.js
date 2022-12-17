@@ -1,4 +1,5 @@
 const fs = require ('fs');
+const request = require ('request')
 
 const write = (value) => {
     process.stdout.write(value + '\n');
@@ -41,4 +42,9 @@ module.exports = {
             write(file.split('\n').slice(-5).join('\n')); //el -5 es para que imprima las ultimas 5 lineas
         })
     },
+    curl: (url) => {
+        request(url, (err, response, body) => {
+            write(body);
+        })
+    }
 }
