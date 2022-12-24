@@ -3,7 +3,22 @@
 Promises Workshop: construye la libreria de ES6 promises, pledge.js
 ----------------------------------------------------------------*/
 // // TU CÓDIGO AQUÍ:
+function $Promise (executor) {
+    if (typeof executor !== 'function') {
+        throw TypeError('executor must be a function!')
+    }
+    this._state = 'pending';
+    this._value = null;
+};
 
+$Promise.prototype._internalResolve = (data) => {
+    if (this._state === 'pending') {
+        this._state = 'fulfilled';
+        this._value = data;
+    }
+};
+
+$Promise.prototype._internalReject = () => {};
 
 
 module.exports = $Promise;
