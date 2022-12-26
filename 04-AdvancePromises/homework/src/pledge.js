@@ -8,17 +8,54 @@ function $Promise (executor) {
         throw TypeError('executor must be a function!')
     }
     this._state = 'pending';
-    this._value = null;
+    this._value = undefined;
+    this._handlerGroups = [];
+
+    executor (this._internalResolve.bind(this), this._internalReject.bind(this));
 };
 
-$Promise.prototype._internalResolve = (data) => {
+$Promise.prototype._callHandlers = function () {
+    //mientras haya handlers para ejecutar... ejecutá
+    //si está resolved => sH
+    //si está rejected => eH
+    while (this._handlerGroups.length) {
+        const group = this._handlerGroups.shift();
+        if (this._state === 'fulfilled' && group.successCb) group.successCb(this._value);
+        if (this._state === 'rejected' && group.errorCb) group.errorCb(this._value);
+    }
+}
+
+$Promise.prototype._internalResolve = function (data) {
     if (this._state === 'pending') {
         this._state = 'fulfilled';
         this._value = data;
+        this._callHandlers();
     }
 };
 
-$Promise.prototype._internalReject = () => {};
+$Promise.prototype._internalReject = function (reason) {
+    if (this._state === 'pending') {
+        this._state = 'rejected';
+        this._value = reason;
+        this._callHandlers();
+    }
+};
+
+
+$Promise.prototype.then = function (successCb, errorCb) {
+    this._handlerGroups.push({
+        successCb: typeof successCb === 'function' ? successCb : false,
+        errorCb: typeof errorCb === 'function' ? errorCb : false,
+    });
+
+    if (this._state !== 'pending'){
+        this._callHandlers();
+    }
+};
+
+$Promise.prototype.catch = function (errorCb) {
+    return this.then(null, errorCb);
+}
 
 
 module.exports = $Promise;
