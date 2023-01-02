@@ -9,10 +9,28 @@ app.get('/', (req, res) => {
   });
 });
 
-app.post('/product', (req, res) => {
+app.get('/test', (req, res) => {
   res.send({
-    result: req.body.a / req.body.b,
+    message: 'hola',
   });
 });
+
+app.post('/product', (req, res) => {
+  res.send({
+    result: req.body.a * req.body.b,
+  });
+});
+
+app.post('/sum', (req, res) => {
+  res.send({
+    result: req.body.a + req.body.b,
+  });
+});
+
+app.post('/sumArray', (req, res) => {
+  res.send({
+    result: true
+  })
+})
 
 module.exports = app; // Exportamos app para que supertest session la pueda ejecutar
