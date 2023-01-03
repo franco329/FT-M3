@@ -42,7 +42,7 @@ http.createServer((req, res) => {
     const index = fs.readFileSync("./index.html", "utf-8");
     return res.writeHead(200, { "Content-Type": "text/html" }).end(index)
   }
-// ************************************************************************************************
+// **************************************************************************************************
   if (req.url === "/api") {
     return res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(beatles))
   }
